@@ -2,6 +2,7 @@ package com.example.myapplication.Views.Fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -12,13 +13,13 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
-import com.example.myapplication.Application
 import com.example.myapplication.Models.Movie
 import com.example.myapplication.Presenters.CardPresenter
 import com.example.myapplication.R
 import com.example.myapplication.Utils.GeneralUtils
 import com.example.myapplication.Utils.PicassoBackgroundManager
 import com.example.myapplication.Utils.SimpleBackgroundManager
+import com.example.myapplication.Views.Activities.DetailsActivity
 
 class MainFragment : BrowseSupportFragment() {
 
@@ -68,10 +69,30 @@ class MainFragment : BrowseSupportFragment() {
         val cardPresenterHeader = HeaderItem(1, "Movies")
         val cardRowAdapter = ArrayObjectAdapter(cardItemPresenter)
 
-        val attackOnTitanMovie = Movie("Attack on Titan", "Shingeki no Kyojin", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOf34D9iyL3_WvhA7194iK0Z_DYcgAlXssdi0RLs1PQA0iDxEK2Q")
-        val hunterXHunterMovie = Movie("Hunter X Hunter", "Yoshihiro Togashi", "https://www.dhresource.com/albu_1081228904_00-1.0x0/hunter-x-hunter-silk-wall-poster-36x24-18x12.jpg")
-        val tokyoGhoulMovie = Movie("Tokyo Ghoul", "Sui Ishida", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGRsUzwCUI55D0CVxZ3nLcqwovj2vUNqHkWpJOSBP85Rpg_Knn9Q")
-        val dragonBallZMovie = Movie("Dragon Ball Z", "Akira Toriyama", "https://cdn.shopify.com/s/files/1/0747/3829/products/mGR0108_1024x1024.jpeg?v=1485013733")
+        val attackOnTitanMovie = Movie(
+            "Attack on Titan",
+            "Shingeki no Kyojin",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOf34D9iyL3_WvhA7194iK0Z_DYcgAlXssdi0RLs1PQA0iDxEK2Q"
+        )
+        attackOnTitanMovie.description = "Description"
+        val hunterXHunterMovie = Movie(
+            "Hunter X Hunter",
+            "Yoshihiro Togashi",
+            "https://www.dhresource.com/albu_1081228904_00-1.0x0/hunter-x-hunter-silk-wall-poster-36x24-18x12.jpg"
+        )
+        hunterXHunterMovie.description = "Description"
+        val tokyoGhoulMovie = Movie(
+            "Tokyo Ghoul",
+            "Sui Ishida",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGRsUzwCUI55D0CVxZ3nLcqwovj2vUNqHkWpJOSBP85Rpg_Knn9Q"
+        )
+        tokyoGhoulMovie.description = "Description"
+        val dragonBallZMovie = Movie(
+            "Dragon Ball Z",
+            "Akira Toriyama",
+            "https://cdn.shopify.com/s/files/1/0747/3829/products/mGR0108_1024x1024.jpeg?v=1485013733"
+        )
+        dragonBallZMovie.description = "Description"
 
         cardRowAdapter.add(attackOnTitanMovie)
         cardRowAdapter.add(hunterXHunterMovie)
@@ -85,6 +106,7 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun setupListener() {
         onItemViewSelectedListener = ItemViewSelectedListener()
+        onItemViewClickedListener = ItemViewClickedListener()
     }
 
     private class GridItemPresenter : Presenter() {
@@ -128,6 +150,21 @@ class MainFragment : BrowseSupportFragment() {
                 picassoBackgroundManager.updateBackgroundWithDelay("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE-ANkz86ibTb56YxxDo-poucIgrG03ydyScpmmPAciAFGxM0i")
             }
         }
+    }
 
+    private inner class ItemViewClickedListener : OnItemViewClickedListener {
+        override fun onItemClicked(
+            itemViewHolder: Presenter.ViewHolder?,
+            item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder?,
+            row: Row?
+        ) {
+            if (item is Movie) {
+                val intent = Intent(activity, DetailsActivity::class.java)
+                intent.putExtra(DetailsActivity.MOVIE_SELECTED, item)
+
+                activity?.startActivity(intent)
+            }
+        }
     }
 }
